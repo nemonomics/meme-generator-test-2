@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Meme Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
+    <style>
+        #controls {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Select dropdowns for meme traits -->
+    <div id="controls">
+        <label for="head">Head:</label>
+        <select id="head" onchange="updateMeme()">
+            <option value="">None</option>
+            <option value="head1.png">Head 1</option>
+            <option value="head2.png">Head 2</option>
+            <!-- Add more options as needed -->
+        </select><br><br>
+
+        <label for="body">Body:</label>
+        <select id="body" onchange="updateMeme()">
+            <option value="">None</option>
+            <option value="body1.png">Body 1</option>
+            <option value="body2.png">Body 2</option>
+            <option value="body3.png">Body 3</option>
+            <option value="body4.png">Body 4</option>
+            <option value="body5.png">Body 5</option>
+            <option value="body6.png">Body 6</option>
+            <option value="body7.png">Body 7</option>
+            <option value="body8.png">Body 8</option>
+        </select><br><br>
+
+        <label for="background">Background:</label>
+        <select id="background" onchange="updateMeme()">
+            <option value="">None</option>
+            <option value="bg1.png">Background 1</option>
+            <option value="bg2.png">Background 2</option>
+            <!-- Add more options as needed -->
+        </select><br><br>
+
+        <label for="accessories">Accessories:</label>
+        <select id="accessories" onchange="updateMeme()">
+            <option value="">None</option>
+            <option value="accessory1.png">Accessory 1</option>
+            <option value="accessory2.png">Accessory 2</option>
+            <!-- Add more options as needed -->
+        </select><br><br>
+
+        <button onclick="randomizeMeme()">Randomize</button>
+        <button onclick="downloadMeme()">Download Meme</button>
+    </div>
+
+    <!-- Canvas for displaying the meme -->
+    <canvas id="memeCanvas" width="512" height="512"></canvas>
+
+    <script>
+        const canvas = new fabric.Canvas('memeCanvas');
+        const canvasSize = 512; // Canvas size in pixels
+        const baseImagePath = 'base_image.png'; // Path to your default base image
+
+        function updateMeme() {
+            canvas.clear();
+            fabric.Image.fromURL(baseImagePath, function(baseImg) {
+                baseImg.scaleToWidth(canvasSize);
+                baseImg.set({ left: 0, top: 0, selectable: false });
+                canvas.add(baseImg);
+
+                // Get selected values
+                const head = document.getElementById('head').value;
+                const body = document.getElementById('body').value;
+                const background = document.getElementById('background').value;
+                const accessories = document.getElementById('accessories').value;
+
+                // Load background first
+                if (background) {
+                    fabric.Image.fromURL(background, function(img) {
+                        img.scaleToWidth(canvasSize);
+                        img.set({ left: 0, top: 0, selectable: false });
+                        canvas.add(img);
+                    });
+                }
+
+                // Load head next
+                if (head) {
+                    fabric.Image.fromURL(head, function(img) {
+                        img.scaleToWidth(canvasSize);
+                        img.set({ left: 0, top: 0, selectable: false });
+                        canvas.add(img);
+                    });
+                }
+
+                // Load body after head
+                if (body) {
+                    fabric.Image.fromURL(body, function(img) {
+                        img.scaleToWidth(canvasSize);
+                        img.set({ left: 0, top: 0, selectable: false });
+                        canvas.add(img);
+                    });
+                }
+
+                // Load accessories last to ensure they remain on top
+                if (accessories) {
+                    fabric.Image.fromURL(accessories, function(img) {
+                        img.scaleToWidth(canvasSize);
+                        img.set({ left: 0, top: 0, selectable: false });
+                        canvas.add(img);
+                    });
+                }
+            });
+        }
+
+        function downloadMeme() {
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = 'meme.png';
+            link.click();
+        }
+
+        function randomizeMeme() {
+            const options = {
+                head: ['', 'head1.png', 'head2.png'],
+                body: ['', 'body1.png', 'body2.png', 'body3.png', 'body4.png', 'body5.png', 'body6.png', 'body7.png', 'body8.png'],
+                background: ['', 'bg1.png', 'bg2.png'],
+                accessories: ['', 'accessory1.png', 'accessory2.png']
+            };
+            document.getElementById('head').value = options.head[Math.floor(Math.random() * options.head.length)];
+            document.getElementById('body').value = options.body[Math.floor(Math.random() * options.body.length)];
+            document.getElementById('background').value = options.background[Math.floor(Math.random() * options.background.length)];
+            document.getElementById('accessories').value = options.accessories[Math.floor(Math.random() * options.accessories.length)];
+            updateMeme();
+        }
+
+        // Initialize the meme with default values
+        updateMeme();
+    </script>
+</body>
+</html>
